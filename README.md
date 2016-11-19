@@ -1,1 +1,3 @@
-# docker-pg-dump
+# docker-postgres-backup
+
+For internal usage.
