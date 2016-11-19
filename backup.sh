@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
 consul-template -once -template "/root/pgpass.template:/root/.pgpass" \
   -template "/root/rsyncd_password_file.template:/root/.rsyncd_password_file"
 
