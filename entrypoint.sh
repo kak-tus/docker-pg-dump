@@ -9,4 +9,6 @@ else
     echo "Container timezone not modified"
 fi
 
+printenv | sed 's/^\(.*\)$/export \1/g' > /root/env
+
 cron -f
