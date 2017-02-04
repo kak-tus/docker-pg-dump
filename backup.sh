@@ -16,6 +16,6 @@ for db in $dbs; do
   echo "Backup $db"
   pg_dump -h $BACKUP_HOST -U postgres $db > /root/${db}_$dt.sql
   bzip2 /root/${db}_$dt.sql
-  rsync --password-file=/root/.rsyncd_password_file /root/${db}_$dt.sql.bz2 backup@backup.prepodam.ru::backup/postgresql/
+  rsync --password-file=/root/.rsyncd_password_file /root/${db}_$dt.sql.bz2 ${BACKUP_TARGET_USER}@${BACKUP_TARGET_HOST}::${BACKUP_TARGET_MODULE}${BACKUP_TARGET_PATH}/
   rm /root/${db}_$dt.sql.bz2
 done

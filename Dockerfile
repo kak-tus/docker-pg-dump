@@ -9,10 +9,12 @@ ENV BACKUP_HOST=
 ENV SET_CONTAINER_TIMEZONE=true
 ENV CONTAINER_TIMEZONE=Europe/Moscow
 
+ENV CONSUL_TEMPLATE_VERSION=0.18.0
+
 COPY backup /etc/cron.d/backup
 COPY backup.sh /usr/local/bin/backup.sh
 COPY pgpass.template /root/pgpass.template
-COPY consul-template_0.16.0_SHA256SUMS /usr/local/bin/consul-template_0.16.0_SHA256SUMS
+COPY consul-template_${CONSUL_TEMPLATE_VERSION}_SHA256SUMS /usr/local/bin/consul-template_${CONSUL_TEMPLATE_VERSION}_SHA256SUMS
 COPY rsyncd_password_file.template /root/rsyncd_password_file.template
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
@@ -26,16 +28,18 @@ RUN \
   && rm -rf /etc/cron.monthly/* \
   && rm -rf /etc/cron.weekly/*
 
-RUN \
-  cd /usr/local/bin \
+  && cd /usr/local/bin \
+  && curl -L https://releases.hashicorp.com/consul-template/${CONSUL_TEMPLATE_VERSION}/consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip -o consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip \
+  && sha256sum -c consul-template_${CONSUL_TEMPLATE_VERSION}_SHA256SUMS \
+  && unzip consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip \
+  && rm consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip consul-template_${CONSUL_TEMPLATE_VERSION}_SHA256SUMS \
 
-  && curl -L https://releases.hashicorp.com/consul-template/0.16.0/consul-template_0.16.0_linux_amd64.zip -o consul-template_0.16.0_linux_amd64.zip \
-  && sha256sum -c consul-template_0.16.0_SHA256SUMS \
-  && unzip consul-template_0.16.0_linux_amd64.zip \
-  && rm consul-template_0.16.0_linux_amd64.zip consul-template_0.16.0_SHA256SUMS
-
-RUN \
-  apt-get remove -y curl unzip ca-certificates \
+  && apt-get purge -y curl unzip ca-certificates \
   && rm -rf /var/lib/apt/lists/*
+
+ENV BACKUP_TARGET_USER=
+ENV BACKUP_TARGET_HOST=
+ENV BACKUP_TARGET_MODULE=
+ENV BACKUP_TARGET_PATH=
 
 ENTRYPOINT /usr/local/bin/entrypoint.sh
