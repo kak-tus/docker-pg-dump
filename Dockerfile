@@ -26,7 +26,7 @@ RUN \
   && rm -rf /etc/cron.daily/* \
   && rm -rf /etc/cron.hourly/* \
   && rm -rf /etc/cron.monthly/* \
-  && rm -rf /etc/cron.weekly/*
+  && rm -rf /etc/cron.weekly/* \
 
   && cd /usr/local/bin \
   && curl -L https://releases.hashicorp.com/consul-template/${CONSUL_TEMPLATE_VERSION}/consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip -o consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip \
