@@ -45,7 +45,6 @@ ENV CONTAINER_TIMEZONE=Europe/Moscow
 
 COPY backup.sh /usr/local/bin/backup.sh
 COPY pgpass.template /root/pgpass.template
-COPY rsyncd_password_file.template /root/rsyncd_password_file.template
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
