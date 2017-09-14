@@ -9,7 +9,11 @@ else
     echo "Container timezone not modified"
 fi
 
+mkdir -p $BACKUP_PATH
+
 printenv | sed 's/^\(.*\)$/export \1/g' > /root/env
+
+( crontab -l ; echo '0 0 * * * . /root/env ; /usr/local/bin/backup.sh >/proc/1/fd/1 2>/proc/1/fd/2' ) | crontab
 
 cron -f >/proc/1/fd/1 2>/proc/1/fd/2 &
 child=$!

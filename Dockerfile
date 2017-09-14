@@ -1,12 +1,18 @@
 FROM postgres:9.6
 
-ENV CONSUL_TEMPLATE_VERSION=0.18.0
-ENV CONSUL_TEMPLATE_SHA256=f7adf1f879389e7f4e881d63ef3b84bce5bc6e073eb7a64940785d32c997bc4b
+ENV CONSUL_TEMPLATE_VERSION=0.19.3
+ENV CONSUL_TEMPLATE_SHA256=47b3f134144b3f2c6c1d4c498124af3c4f1a4767986d71edfda694f822eb7680
 
 RUN \
   apt-get update \
+
   && apt-get install --no-install-recommends --no-install-suggests -y \
-  curl unzip ca-certificates cron rsync \
+    ca-certificates \
+    curl \
+    unzip \
+
+  && apt-get install --no-install-recommends --no-install-suggests -y \
+    cron \
 
   && rm -rf /etc/cron.daily/* \
   && rm -rf /etc/cron.hourly/* \
@@ -19,8 +25,11 @@ RUN \
   && unzip consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip \
   && rm consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip \
 
-  && apt-get purge -y curl unzip ca-certificates \
-  && apt-get autoremove -y \
+  && apt-get purge -y --auto-remove \
+    curl \
+    unzip \
+    ca-certificates \
+
   && rm -rf /var/lib/apt/lists/*
 
 ENV CONSUL_HTTP_ADDR=
@@ -29,19 +38,14 @@ ENV VAULT_ADDR=
 ENV VAULT_TOKEN=
 
 ENV BACKUP_HOST=
+ENV BACKUP_PATH=
 
 ENV SET_CONTAINER_TIMEZONE=true
 ENV CONTAINER_TIMEZONE=Europe/Moscow
 
-ENV BACKUP_TARGET_USER=
-ENV BACKUP_TARGET_HOST=
-ENV BACKUP_TARGET_MODULE=
-ENV BACKUP_TARGET_PATH=
-
-COPY backup /etc/cron.d/backup
 COPY backup.sh /usr/local/bin/backup.sh
 COPY pgpass.template /root/pgpass.template
 COPY rsyncd_password_file.template /root/rsyncd_password_file.template
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
-ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

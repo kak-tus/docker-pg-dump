@@ -1,1 +1,1 @@
-{{env "BACKUP_HOST"}}:5432:*:postgres:{{with secret "secret/ansible/docker_postgresql/pg_password"}}{{.Data.value}}{{end}}
+{{ env "BACKUP_HOST" }}:5432:*:postgres:{{ with secret "secret/ansible/docker_postgresql/pg_password" }}{{ .Data.value }}{{ end }}
